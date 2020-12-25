@@ -8,6 +8,14 @@ Some previews:
 If you would like to check it out in action:
 https://knight-tour-b14ec.firebaseapp.com/
 
+# Getting Started
+## Running The Program
+To run the program, just access `index.html` using any browser.
+
+## Integrating to Firebase
+To add storing capabilities, I have implemented a firebase connection.
+First, in `sketch.js`, change `enableDatabase` to `true`.
+Then, create a new file called `constants.js`
 # To-Do List
 - Add ACO Algorithm approach
 - Add pure heuristics approach

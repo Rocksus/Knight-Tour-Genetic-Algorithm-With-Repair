@@ -1,54 +1,91 @@
+
+// populationSize, change this to experiment around
+var populationSize = 1000;
+// set this to true if you want to implement your own database
+var enableDatabase = false;
+// number of columns
+// this also applies to row
+var cols=8;
+
+// variable initialization
 var scl;
 var population;
-var count=0;
 var table;
-var generation=1;
 var stats;
 var chromosomes;
-var cols=8;
 var tourslog;
 var generations = [];
 var knightmoves = [];
 var toursdata;
-var findForward;
 
+// setup is a p5js function that
+// will run only once
 function setup() {
+  // create a 800x800 pixel canvas
   createCanvas(800,800);
+  // set the background to black
   background(0);
+  // set fill color to white
   fill(255);
+
+  // set scale to be width of canvas divided by number of columns
   scl=width/cols;
+
+  // initialize new table
   table = new Table();
-  population = new Population();
+
+  // initialize new population with the population size
+  population = new Population(populationSize);
+
+  // display the table
   table.show();
+  
+  // create a paragraph element
   stats = createP("Stats");
+  // place the paragraph on 850, 10
   stats.position(850,10);
+  // add class "stats" to the paragraph
   stats.class("stats");
+  // rename paragraph element to say GENERATION 0
   stats.html("GENERATION 0");
+
+  // create a new paragraph element
   chromosomes = createP("Chromosomes");
   chromosomes.position(850,40);
   chromosomes.class("chromosomes");
   chromosomes.html("Chromosomes");
-  toursdata = createP("");
-  toursdata.position(850,70);
-  toursdata.class("toursdata");
-  findForward = boolean(Math.round(random(1)));
 
-  var config = {
-    apiKey: "AIzaSyATpSjNGEcz54BltY8BTmJxqQXURYge68c",
-    authDomain: "knight-tour-b14ec.firebaseapp.com",
-    databaseURL: "https://knight-tour-b14ec.firebaseio.com",
-    storageBucket: "knight-tour-b14ec.appspot.com",
-    messagingSenderId: "871228350863"
-  };
-  firebase.initializeApp(config);
-
-  var database = firebase.database();
-  tourslog = database.ref('tourslog');
-
-  var ref = database.ref('tourslog');
-  ref.on('value',gotData,errData);
+  
+  if(enableDatabase) {
+    // create a new paragraph element
+    toursdata = createP("");
+    toursdata.position(850,70);
+    toursdata.class("toursdata");
+    
+    // create config key to connect with the firebase database
+    // to store existing tours
+    // change the config according to your apiKey (in constants.js)
+    // NOTE: DO NOT STORE API KEYS IN YOUR REPOSITORY
+    var config = {
+      apiKey: API_KEY,
+      authDomain: AUTH_DOMAIN,
+      databaseURL: DATABASE_URL,
+      storageBucket: STORAGE_BUCKET,
+      messagingSenderId: MESSAGING_SENDER_ID
+    };
+    // initialize firebase
+    firebase.initializeApp(config);
+  
+    var database = firebase.database();
+    tourslog = database.ref('tourslog');
+  
+    var ref = database.ref('tourslog');
+    // fetch data from firebase to show how many valid tours that we have covered
+    ref.on('value',gotData,errData);
+  }
 }
 
+// gotData is the function to process the fetched tours from the database
 function gotData(data)  {
   generations = [];
   knightmoves = [];
@@ -85,14 +122,19 @@ function errData(err) {
   console.log(err);
 }
 
+// draw function is the p5js function
+// that will constantly loop
 function draw() {
+  // run a generation of the genetic algorithm
   population.run();
-  count++;
-  if(count==(cols*cols)-1) {
-    table = new Table();
-    table.show();
-    population.evaluate();
-    population.selection();
-    count=0;
-  }
+
+  // refresh the table
+  table.show();
+
+  // evaluate the GA's generation
+  // display the best candidate on the board
+  population.evaluate();
+
+  // select the candidates for the next GA generation
+  population.selection();
 }
