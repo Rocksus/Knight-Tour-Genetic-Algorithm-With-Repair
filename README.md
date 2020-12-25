@@ -15,7 +15,14 @@ To run the program, just access `index.html` using any browser.
 ## Integrating to Firebase
 To add storing capabilities, I have implemented a firebase connection.
 First, in `sketch.js`, change `enableDatabase` to `true`.
-Then, create a new file called `constants.js`
+Then, create a new file called `constants.js` and fill them with:
+```javascript
+const API_KEY = "your-api-key"
+const AUTH_DOMAIN = "your-firebaseapp-auth-domain"
+const DATABASE_URL = "your-firebaseio-database-url"
+const STORAGE_BUCKET = "your-firebase-storage-bucket-url"
+const MESSAGING_SENDER_ID = "your-messaging-sender-id"
+```
 # To-Do List
 - Add ACO Algorithm approach
 - Add pure heuristics approach
